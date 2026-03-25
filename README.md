@@ -4,6 +4,11 @@
 An intelligent log analysis system that detects sensitive data, classifies risks, and generates AI-based security insights.
 
 ---
+## 🌐 Live Application
+
+👉 https://ai-secure-log-analyzer.onrender.com
+
+
 
 ## ✨ Features
 - 🔐 Sensitive Data Detection (Email, Password, API Keys)
@@ -42,6 +47,4 @@ An intelligent log analysis system that detects sensitive data, classifies risks
 
 
 
-## 🌐 Live Application
 
-👉 https://ai-secure-log-analyzer.onrender.com
