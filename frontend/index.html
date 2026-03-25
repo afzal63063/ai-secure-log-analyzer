@@ -4,114 +4,122 @@
 <meta charset="UTF-8">
 <title>AI Secure Log Analyzer</title>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
+    background: #0f172a;
     color: white;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-.container {
-    width: 90%;
-    max-width: 900px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    animation: fadeIn 1s ease-in-out;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.upload-box {
-    border: 2px dashed #38bdf8;
+/* HEADER */
+.header {
     padding: 20px;
     text-align: center;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: 0.3s;
+    background: #020617;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 1px solid #1e293b;
 }
 
-.upload-box:hover {
-    background: rgba(56,189,248,0.1);
+/* MAIN */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* LEFT PANEL */
+.left {
+    width: 40%;
+    background: #020617;
+    padding: 20px;
+    border-radius: 12px;
 }
 
 textarea {
     width: 100%;
     height: 150px;
-    border-radius: 10px;
-    border: none;
-    padding: 15px;
-    margin-top: 10px;
     background: #0f172a;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
     color: white;
-    resize: none;
+}
+
+input[type="file"] {
+    margin: 10px 0;
 }
 
 button {
     width: 100%;
-    margin-top: 15px;
     padding: 12px;
+    margin-top: 10px;
     border: none;
     border-radius: 10px;
     background: linear-gradient(135deg, #38bdf8, #6366f1);
     color: white;
-    font-size: 16px;
     cursor: pointer;
-    transition: 0.3s;
+    font-weight: 600;
 }
 
 button:hover {
-    transform: scale(1.05);
+    opacity: 0.9;
 }
 
-.result-box {
-    margin-top: 20px;
+/* RIGHT PANEL */
+.right {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* CARDS */
+.card {
     background: #020617;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
-    max-height: 300px;
-    overflow-y: auto;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-pre {
-    white-space: pre-wrap;
+/* RISK BADGE */
+.badge {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
+.high { background: #ef4444; }
+.medium { background: #f59e0b; }
+.low { background: #22c55e; }
+
+/* FINDINGS */
+.finding {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 8px;
+    background: #0f172a;
+    border-radius: 8px;
+}
+
+/* LOADER */
 .loader {
     display: none;
-    margin: 10px auto;
-    border: 5px solid #ccc;
-    border-top: 5px solid #38bdf8;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
+    text-align: center;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px);}
+    from { opacity: 0; transform: translateY(10px);}
     to { opacity: 1; transform: translateY(0);}
 }
 </style>
@@ -119,37 +127,55 @@ pre {
 
 <body>
 
+<div class="header">
+🚀 AI Secure Log Analyzer Dashboard
+</div>
+
 <div class="container">
 
-<h1>🚀 AI Secure Log Analyzer</h1>
-
-<div class="upload-box">
+<!-- LEFT SIDE -->
+<div class="left">
+    <h3>📂 Input Logs</h3>
     <input type="file" id="file">
-    <p>Upload .log / .txt file OR paste logs below</p>
+    <textarea id="log" placeholder="Paste logs here..."></textarea>
+    <button onclick="analyze()">Analyze</button>
 </div>
 
-<textarea id="log" placeholder="Paste logs here..."></textarea>
+<!-- RIGHT SIDE -->
+<div class="right">
 
-<button onclick="analyze()">Analyze Logs</button>
-
-<div class="loader" id="loader"></div>
-
-<div class="result-box">
-    <h3>📊 Analysis Result</h3>
-    <pre id="result">No results yet...</pre>
+<div class="card">
+    <h3>📊 Summary</h3>
+    <p id="summary">No data</p>
 </div>
 
+<div class="card">
+    <h3>⚠ Risk Level</h3>
+    <span id="riskLevel" class="badge">-</span>
+    <p>Score: <span id="riskScore">0</span></p>
+</div>
+
+<div class="card">
+    <h3>🔍 Findings</h3>
+    <div id="findings"></div>
+</div>
+
+<div class="card">
+    <h3>🤖 Insights</h3>
+    <ul id="insights"></ul>
+</div>
+
+<div class="loader" id="loader">Analyzing...</div>
+
+</div>
 </div>
 
 <script>
 function analyze() {
     const fileInput = document.getElementById("file").files[0];
-    const input = document.getElementById("log").value;
-    const loader = document.getElementById("loader");
-    const resultBox = document.getElementById("result");
+    const log = document.getElementById("log").value;
 
-    loader.style.display = "block";
-    resultBox.innerText = "Analyzing...";
+    document.getElementById("loader").style.display = "block";
 
     if (fileInput) {
         const formData = new FormData();
@@ -160,38 +186,57 @@ function analyze() {
             body: formData
         })
         .then(res => res.json())
-        .then(showResult)
+        .then(updateUI)
         .catch(showError);
 
     } else {
         fetch("/analyze", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
                 input_type: "log",
-                content: input
+                content: log
             })
         })
         .then(res => res.json())
-        .then(showResult)
+        .then(updateUI)
         .catch(showError);
     }
 }
 
-function showResult(data) {
+function updateUI(data) {
     document.getElementById("loader").style.display = "none";
 
-    // Format nicely
-    document.getElementById("result").innerText =
-        JSON.stringify(data, null, 2);
+    document.getElementById("summary").innerText = data.summary;
+
+    let level = data.risk_level;
+    let badge = document.getElementById("riskLevel");
+    badge.innerText = level.toUpperCase();
+    badge.className = "badge " + level;
+
+    document.getElementById("riskScore").innerText = data.risk_score;
+
+    // Findings
+    let findingsHTML = "";
+    data.findings.forEach(f => {
+        findingsHTML += `
+        <div class="finding">
+            <span>${f.type}: ${f.value}</span>
+            <span class="badge ${f.risk}">${f.risk}</span>
+        </div>`;
+    });
+    document.getElementById("findings").innerHTML = findingsHTML;
+
+    // Insights
+    let insightsHTML = "";
+    data.insights.forEach(i => {
+        insightsHTML += `<li>${i}</li>`;
+    });
+    document.getElementById("insights").innerHTML = insightsHTML;
 }
 
 function showError(err) {
-    document.getElementById("loader").style.display = "none";
-    document.getElementById("result").innerText =
-        "❌ Error: " + err;
+    document.getElementById("loader").innerText = "Error: " + err;
 }
 </script>
 
