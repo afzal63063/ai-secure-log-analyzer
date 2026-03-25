@@ -39,3 +39,9 @@ An intelligent log analysis system that detects sensitive data, classifies risks
     "Stack trace reveals internal system details"
   ]
 }
+
+
+
+## 🌐 Live Application
+
+👉 https://ai-secure-log-analyzer.onrender.com
